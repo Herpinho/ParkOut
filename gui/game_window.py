@@ -8,6 +8,7 @@ from utils.config import global_options
 from core.board import Board
 class GameWindow(QMainWindow):
     CELL_SIZE = 60
+    #test
     def __init__(self, main_window):
         super().__init__()
         self.passenger_option = global_options.passenger_count

@@ -4,37 +4,25 @@ from PySide6.QtCore import QObject
 from openpyxl.utils import rows_from_range
 from rich import columns
 from tensorflow.python.ops.metrics_impl import false_negatives
-
+from models.passenger import Passenger
 from models.bus import Bus
-
+from utils.config import global_options
 class Board(QObject):
    ## board_updated = Signal()
-    def __init__(self, rows = 16, cols = 16, num_platforms = 4):
+    def __init__(self, rows = 10, cols = 10, num_platforms = 10):
         super().__init__()
         self.rows = rows
+        self.max_points = 0
         self.cols= cols
         self.num_platforms = num_platforms
-
+        self.point_count = 0
         self.grid = [[None for _ in range (cols)] for _ in range(rows)]
 
         self.platforms = [None for _ in range(num_platforms)]
-        self.bus_count= 6
+        self.bus_count = global_options.bus_count
         self.buses = []
-
+        self.passenger_list = []
         self.initialize_board()
-        for bus in self.buses:
-            print(vars(bus))
-        print("Board grid:")
-        for r in range(self.rows):
-            row_str = []
-            for c in range(self.cols):
-                cell = self.grid[r][c]
-                if cell is None:
-                    row_str.append("Empty")
-                else:
-                    # Show bus color or some short identifier
-                    row_str.append(cell.color[0].upper())  # first letter of color, uppercase
-            print(" | ".join(row_str))
     def initialize_board(self):
         colors = ["red","white","yellow","green"]
         capacities = [4,6,8,12]
@@ -53,31 +41,7 @@ class Board(QObject):
                 if self.place_bus(bus,row, col):
                     placed = True
                 attempts += 1
-
-    def move_bus_to_platform(self,bus,platform_index):
-
-        if platform_index < 0 or platform_index >= self.num_platforms:
-            return False
-        if self.platforms[platform_index] is not None:
-            return False
-        if not bus.can_board_passengers():
-            return False
-
-        for r in range(self.rows):
-            for c in range(self.cols):
-                if self.grid[r][c] ==bus:
-                    self.grid[r][c] = None
-
-        self.platforms[platform_index] = bus
-        bus.board_passengers()
-        self.board_updated.emit()
-        return True
-
-    def remove_bus_from_platform(self, platform_index):
-        if 0 <= platform_index < self.num_platforms:
-            self.platforms[platform_index] = None
-            self.board_updated.emit()
-
+        random.shuffle(self.passenger_list)
     def is_solved(self):
         return all(bus.boarded for bus in self.buses)
 
@@ -131,10 +95,35 @@ class Board(QObject):
                     for i in range(bus.length):
                         self.grid[row][col + i] = bus  # move right horizontally
                 self.buses.append(bus)
+                self.passenger_list.extend(self.generate_passengers(bus))
                 return True
             return False
 
+    def generate_passengers(self,bus):
+        passengers = []
 
+        for _ in range(bus.capacity):
+            passenger = Passenger (
+                color = bus.color
+            )
+            print(f"{passenger.color} created")
+            passengers.append(passenger)
+            self.max_points += 1
 
+        return passengers
+
+    def remove_passengers(self,bus,passengers):
+        count = bus.capacity
+        color = bus.color
+        removed = 0
+        print(count)
+        for passenger in passengers[:]:
+            print(passenger)
+            if passenger.color == color and removed < count:
+                removed += 1
+                print(removed,passenger.color)
+                passengers.remove(passenger)
+                self.passenger_list.remove(passenger)
+                self.point_count +=1
 
 

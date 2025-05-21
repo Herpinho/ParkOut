@@ -18,8 +18,7 @@ class BusSegmentItem(QGraphicsRectItem):
         self.setCursor(Qt.PointingHandCursor)
 
     def mousePressEvent(self, event):
-        print(f"test at ({self.row},{self.col}) - BUS ID: {id(self.bus)} - BUS DIRECTION: {Bus.get_direction(self.bus)}")
         from gui.main_window import MainWindow
         if self.game_window:
-            cells = self.game_window.can_move_until_exit(self.bus)
+            self.game_window.can_move_until_exit(self.bus)
 

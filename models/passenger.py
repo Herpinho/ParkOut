@@ -1,3 +1,3 @@
 class Passenger:
-    def __init(self,color:str):
+    def __init__(self,color):
         self.color = color

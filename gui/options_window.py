@@ -19,14 +19,14 @@ class OptionsWindow(QDialog):
 
         bus_option_label = QLabel("Bus count:")
         bus_input = QLineEdit()
-        bus_input.setStyleSheet("background-color:rgb(255,255,255);")
+        bus_input.setStyleSheet("background-color:rgb(55, 62, 74);")
         bus_input.setPlaceholderText("Bus count")
         bus_input.setFixedWidth(200)
         bus_input.setText(str(self.bus_input))
 
         passenger_option_label = QLabel("Passenger count:")
         passenger_input = QLineEdit()
-        passenger_input.setStyleSheet("background-color:rgb(255,255,255);")
+        passenger_input.setStyleSheet("background-color:rgb(55, 62, 74);")
         passenger_input.setPlaceholderText("Passenger count")
         passenger_input.setFixedWidth(200)
         passenger_input.setText(str(self.passenger_input))

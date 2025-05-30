@@ -59,9 +59,14 @@ class MainWindow(QMainWindow):
         self.close()
     def start_game(self):
         from gui.game_window import GameWindow
-        self.hide()
+        try:
+            self.game_window.close()  # Fecha a janela antiga, se existir
+        except AttributeError:
+            pass  # Ainda não há nenhuma
+
         self.game_window = GameWindow(self)
         self.game_window.show()
+        self.hide()  # Opcional: esconder o menu principal durante o jogo
     def game_options(self):
         from gui.options_window import OptionsWindow
         self.options_window = OptionsWindow(self)

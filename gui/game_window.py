@@ -6,6 +6,10 @@ from gui.bus_segment_item import BusSegmentItem
 from gui.main_window import MainWindow
 from utils.config import global_options
 from core.board import Board
+def main_menu(self):
+    self.close()
+    self.main_window.show()
+
 class GameWindow(QMainWindow):
     CELL_SIZE = 60
     #
@@ -37,9 +41,25 @@ class GameWindow(QMainWindow):
             "font-size: 15px;"
             "padding: 10px;"
         )
-        main_menu_button.clicked.connect(self.main_menu)
-
         layout.addWidget(main_menu_button, alignment=Qt.AlignBottom)
+        main_menu_button.clicked.connect(self.main_menu)
+    
+        reset_game = QPushButton("Restart Game", self)
+        reset_game.setStyleSheet(   
+            "background-color: rgb(173, 29, 37);"
+            "border-radius: 5px;"
+            "border-style: solid;"
+            "border-width: 2px;"
+            "border-color: rgb(59, 5, 8);"
+            "color: black;"
+            "font-size: 15px;"
+            "padding: 12px;"
+
+        )
+        layout.addWidget(reset_game, alignment=Qt.AlignBottom)
+        reset_game.clicked.connect(self.main_window.start_game)
+        
+
 
         self.setCentralWidget(central_widget)
     def draw_board(self):
